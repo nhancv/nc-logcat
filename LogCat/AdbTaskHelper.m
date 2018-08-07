@@ -20,7 +20,6 @@
         NSBundle *mainBundle = [NSBundle mainBundle];
         adbPath = [mainBundle pathForResource:@"adb" ofType:nil];
     }
-//    NSLog(@"Will use ADB [%@]", adbPath);
     
     [task setLaunchPath:adbPath];
     [task setArguments: arguments];

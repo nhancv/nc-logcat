@@ -12,7 +12,7 @@
 		8328F09616820D03000E47B5 /* DeviceScreenDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8328F09516820D03000E47B5 /* DeviceScreenDatasource.m */; };
 		8328F09916823E25000E47B5 /* RGBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8328F09816823E25000E47B5 /* RGBHelper.m */; };
 		83486928167D630D001BF84D /* SelectableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83486926167D630D001BF84D /* SelectableTableView.m */; };
-		83486929167D630D001BF84D /* NSString_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 83486927167D630D001BF84D /* NSString_Extension.m */; };
+		83486929167D630D001BF84D /* NSStringExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 83486927167D630D001BF84D /* NSStringExtension.m */; };
 		8348692C167D6926001BF84D /* LogDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8348692B167D6926001BF84D /* LogDatasource.m */; };
 		83486933167D7853001BF84D /* AdbTaskHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 83486932167D7853001BF84D /* AdbTaskHelper.m */; };
 		83542DDF167ECA0A000AF99E /* DeviceListDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 83542DDE167ECA0A000AF99E /* DeviceListDatasource.m */; };
@@ -45,7 +45,7 @@
 		8328F09716823E25000E47B5 /* RGBHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGBHelper.h; sourceTree = "<group>"; };
 		8328F09816823E25000E47B5 /* RGBHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGBHelper.m; sourceTree = "<group>"; };
 		83486926167D630D001BF84D /* SelectableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectableTableView.m; sourceTree = "<group>"; };
-		83486927167D630D001BF84D /* NSString_Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_Extension.m; sourceTree = "<group>"; };
+		83486927167D630D001BF84D /* NSStringExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringExtension.m; sourceTree = "<group>"; };
 		8348692A167D6926001BF84D /* LogDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogDatasource.h; sourceTree = "<group>"; };
 		8348692B167D6926001BF84D /* LogDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogDatasource.m; sourceTree = "<group>"; };
 		83486931167D7853001BF84D /* AdbTaskHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdbTaskHelper.h; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 		83A99622167973230042425F /* FilterSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterSheet.h; sourceTree = "<group>"; };
 		83A99623167973230042425F /* FilterSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterSheet.m; sourceTree = "<group>"; };
 		83E99EC5167D199F00ACF31A /* atext */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = atext; sourceTree = "<group>"; };
-		83E99EDB167D610900ACF31A /* NSString_Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_Extension.h; sourceTree = "<group>"; };
+		83E99EDB167D610900ACF31A /* NSStringExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSStringExtension.h; sourceTree = "<group>"; };
 		83FECD091680092C004F1E07 /* DevicePickerSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DevicePickerSheet.h; sourceTree = "<group>"; };
 		83FECD0A1680092C004F1E07 /* DevicePickerSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DevicePickerSheet.m; sourceTree = "<group>"; };
 		83FECD0C16800964004F1E07 /* DevicePickerSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DevicePickerSheet.xib; sourceTree = "<group>"; };
@@ -117,32 +117,27 @@
 			children = (
 				83FECD091680092C004F1E07 /* DevicePickerSheet.h */,
 				83FECD0A1680092C004F1E07 /* DevicePickerSheet.m */,
-				83FECD0C16800964004F1E07 /* DevicePickerSheet.xib */,
 				A5B4D264147AC70300DA2336 /* LogCatPreferences.h */,
 				A5B4D265147AC70300DA2336 /* LogCatPreferences.m */,
 				A5B4D260147AC6AA00DA2336 /* DBPrefsWindowController.h */,
 				A5B4D261147AC6AA00DA2336 /* DBPrefsWindowController.m */,
-				A5B4D267147AC73800DA2336 /* Preferences.xib */,
 				A5FF110814743297001A3B38 /* LogCatAppDelegate.h */,
 				A5FF110914743297001A3B38 /* LogCatAppDelegate.m */,
-				A5FF110B14743297001A3B38 /* MainMenu.xib */,
 				83A99622167973230042425F /* FilterSheet.h */,
 				83A99623167973230042425F /* FilterSheet.m */,
-				A53E91C51479C4C100C92015 /* FilterSheet.xib */,
 				8328F08F168203AF000E47B5 /* RemoteScreenMonitorSheet.h */,
 				8328F090168203AF000E47B5 /* RemoteScreenMonitorSheet.m */,
-				8328F08C16820383000E47B5 /* RemoteScreenMonitor.xib */,
 			);
 			name = Scenes;
 			sourceTree = "<group>";
 		};
-		83E99ECE167D4CFC00ACF31A /* helpers */ = {
+		83E99ECE167D4CFC00ACF31A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				8328F09716823E25000E47B5 /* RGBHelper.h */,
 				8328F09816823E25000E47B5 /* RGBHelper.m */,
-				83E99EDB167D610900ACF31A /* NSString_Extension.h */,
-				83486927167D630D001BF84D /* NSString_Extension.m */,
+				83E99EDB167D610900ACF31A /* NSStringExtension.h */,
+				83486927167D630D001BF84D /* NSStringExtension.m */,
 				83A9961D16794F6B0042425F /* SelectableTableView.h */,
 				83486926167D630D001BF84D /* SelectableTableView.m */,
 				83A99621167969C60042425F /* MenuDelegate.h */,
@@ -151,7 +146,7 @@
 				83FECD0E1680FFB3004F1E07 /* BinaryDataScanner.h */,
 				83FECD0F1680FFB3004F1E07 /* BinaryDataScanner.m */,
 			);
-			name = helpers;
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		A52B597A167DDB14007B0030 /* Images */ = {
@@ -220,9 +215,10 @@
 		A5FF10FC14743296001A3B38 /* LogCat */ = {
 			isa = PBXGroup;
 			children = (
+				C8C9636521195DA900AB766F /* Xib */,
 				8328F0931682052E000E47B5 /* Scenes */,
 				8328F092168204E1000E47B5 /* Datasources */,
-				83E99ECE167D4CFC00ACF31A /* helpers */,
+				83E99ECE167D4CFC00ACF31A /* Helpers */,
 				A5C27F37147E6E1E00112228 /* Resources */,
 				A5FF10FD14743296001A3B38 /* Supporting Files */,
 			);
@@ -239,6 +235,18 @@
 				A5FF110514743297001A3B38 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C8C9636521195DA900AB766F /* Xib */ = {
+			isa = PBXGroup;
+			children = (
+				83FECD0C16800964004F1E07 /* DevicePickerSheet.xib */,
+				A5B4D267147AC73800DA2336 /* Preferences.xib */,
+				A5FF110B14743297001A3B38 /* MainMenu.xib */,
+				A53E91C51479C4C100C92015 /* FilterSheet.xib */,
+				8328F08C16820383000E47B5 /* RemoteScreenMonitor.xib */,
+			);
+			name = Xib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,7 +327,7 @@
 				A5B4D266147AC70300DA2336 /* LogCatPreferences.m in Sources */,
 				83A99624167973230042425F /* FilterSheet.m in Sources */,
 				83486928167D630D001BF84D /* SelectableTableView.m in Sources */,
-				83486929167D630D001BF84D /* NSString_Extension.m in Sources */,
+				83486929167D630D001BF84D /* NSStringExtension.m in Sources */,
 				8348692C167D6926001BF84D /* LogDatasource.m in Sources */,
 				83486933167D7853001BF84D /* AdbTaskHelper.m in Sources */,
 				83542DDF167ECA0A000AF99E /* DeviceListDatasource.m in Sources */,

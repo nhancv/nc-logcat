@@ -5,7 +5,7 @@
 //  Created by Chris Wilson on 12/12/12.
 //
 
-#import "NSString_Extension.h"
+#import "NSStringExtension.h"
 
 @implementation NSString (Helpers)
 

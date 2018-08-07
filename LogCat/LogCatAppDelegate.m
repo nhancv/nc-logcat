@@ -11,7 +11,7 @@
 #import "LogCatPreferences.h"
 #import "SelectableTableView.h"
 #import "MenuDelegate.h"
-#import "NSString_Extension.h"
+#import "NSStringExtension.h"
 #import "DeviceListDatasource.h"
 
 #define DARK_GREEN_COLOR [NSColor colorWithCalibratedRed:0 green:0.50 blue:0 alpha:1.0]
@@ -109,7 +109,6 @@
     
     fontPointSize = [defaults floatForKey:FONT_SIZE_KEY];
     if (fontPointSize == 0) {
-        NSLog(@"Will use font size 11 as default");
         fontPointSize = 11;
     }
     
@@ -162,7 +161,6 @@
         [self.filterListTable setBackgroundColor:[NSColor blackColor]];
         [self.logDataTable setBackgroundColor:[NSColor blackColor]];
         
-        //[logDataTable setGridStyleMask:NSTableViewGridNone];
         [self.logDataTable setGridColor:[NSColor darkGrayColor]];
     }
     
@@ -170,11 +168,10 @@
     self.adbPath = [defaults objectForKey:@"adbPath"];
     if (self.adbPath == nil && [self.adbPath length] == 0) {
         // Use built in adb
-        //NSBundle *mainBundle = [NSBundle mainBundle];
-        //self.adbPath = [mainBundle pathForResource:@"adb" ofType:nil];
+        NSBundle *mainBundle = [NSBundle mainBundle];
+        self.adbPath = [mainBundle pathForResource:@"adb" ofType:nil];
     }
     
-//    NSLog(@"Will use ADB: [%@]", self.adbPath);
 }
 
 - (void) updateStatus {
@@ -213,7 +210,6 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    NSLog(@"applicationDidFinishLaunching: %@", aNotification);
     resizeCellHeightBasedOnFontSize = NO;
     self.findIndex = -1;
     self.baseRowTemplates = nil;
@@ -270,19 +266,16 @@
     }
 
     if(! [[remoteScreen window] isVisible] ) {
-        NSLog(@"window: %@", [remoteScreen window]);
         [remoteScreen setDeviceId:[self.logDatasource deviceId]];
         [remoteScreen showWindow:self];
     }
 }
 
 - (IBAction)cancelDevicePicker:(id)sender {
-    NSLog(@"cancelDevicePicker");
     [NSApp endSheet:sheetDevicePicker returnCode:NSCancelButton];
 }
 
 - (IBAction)startLogForDevice:(id)sender {
-    NSLog(@"cancelDevicePicker");
     [NSApp endSheet:sheetDevicePicker returnCode:NSOKButton];
 }
 
@@ -304,8 +297,6 @@
             NSRect visibleRect = [[[self.logDataTable enclosingScrollView] contentView] visibleRect];
             float maxy = ([self.logData count] * (fontHeight)) - (fontHeight * 10);
             float location = (visibleRect.origin.y + visibleRect.size.height);
-            //        NSLog(@"loc : %f", location);
-            //        NSLog(@"maxy: %f", maxy);
             if (location > maxy) {
                 scrollToBottom = YES;
             } else {
@@ -367,8 +358,7 @@
             NSString* rowType = data[KEY_TYPE];
             NSFont* font = fonts[rowType];
             fontHeight = [font pointSize]*1.5;
-        //        NSLog(@"Height: %f", height);
-            return fontHeight; //
+            return fontHeight;
         }
     }
     return [tableView rowHeight];
@@ -415,7 +405,6 @@
     }
     
     [self.logDataTable deselectAll:self];
-    NSLog(@"Search for: \"%@\" from index %ld direction=%ld", searchString, self.findIndex, direction);
     if (self.findIndex == -1) {
         self.findIndex = [[self.logDataTable selectedRowIndexes] lastIndex];
         if (self.findIndex > [self.logData count]) {
@@ -442,7 +431,6 @@
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:searchString options:0 error:NULL];
             NSTextCheckingResult *match = [regex firstMatchInString:stringToSearch options:0 range:NSMakeRange(0, [stringToSearch length])];
             if (match != nil && [match range].location != NSNotFound) {
-                NSLog(@"Row %ld matches", self.findIndex);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:self.findIndex];
                 [self.logDataTable selectRowIndexes:indexSet byExtendingSelection:NO];
                 
@@ -451,7 +439,6 @@
             }
         } else {
             if ([stringToSearch rangeOfString:searchString options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                NSLog(@"Row %ld matches", self.findIndex);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:self.findIndex];
                 [self.logDataTable selectRowIndexes:indexSet byExtendingSelection:NO];
                 
@@ -462,7 +449,6 @@
         }
         
         if (searchedRows >= [self.logData count]) {
-            NSLog(@"No matches found");
             NSBeep();
             return;
         }
@@ -500,7 +486,6 @@
     bool filterSelected = rowIndex != 0;
     if (!filterSelected) {
         self.predicate = nil;
-        NSLog(@"Clear Filter");
         [self.filterListTable deselectAll:self];
     }
     scrollToBottom = YES;
@@ -509,13 +494,11 @@
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    NSLog(@"Selected Did Change... %@", aNotification);
     NSTableView* tv = [aNotification object];
     if (tv == self.logDataTable) {
         
         NSInteger selectedItem = [self.logDataTable selectedRow];
         if (self.logData != nil && selectedItem >= 0 && selectedItem < [self.logData count]) {
-            NSLog(@"Selected logDataTable row: %ld", selectedItem);
             NSDictionary* selectedItem = [self.logData objectAtIndex:[self.logDataTable selectedRow]];
             selectedLogMessage = [selectedItem objectForKey:KEY_IDX];
             
@@ -523,7 +506,6 @@
             selectedLogMessage = nil;
         }
         
-        NSLog(@"Selected Log item: %@", selectedLogMessage);
         return;
     } else if (tv != self.filterListTable) {
         return;
@@ -537,7 +519,6 @@
 
     NSMutableArray* predicates = [NSMutableArray arrayWithCapacity:1];
     if ([self.filterListTable selectedRow] > 0) {
-        NSLog(@"Filter by %ld predicate", [self.filterListTable selectedRow]);
 
         NSIndexSet* selectedIndexes = [self.filterListTable selectedRowIndexes];
         if ([selectedIndexes count] == 1) {
@@ -570,7 +551,6 @@
     
     self.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
     
-    NSLog(@"Filter By: %@", [predicates description]);
     if (self.loadedLogData != nil) {
         self.logData = [self.loadedLogData filteredArrayUsingPredicate: self.predicate];
     } else {
@@ -581,7 +561,6 @@
 }
 
 - (IBAction)quickFilter:(id)sender {
-    NSLog(@"quick filter %@", sender);    
     [self applySelectedFilters];
     
     if (self.logData && selectedLogMessage != nil) {
@@ -708,12 +687,8 @@
  It would be ncie to do it all in ObjC.
  **/
 - (IBAction)openTypingTerminal:(id)sender {
-    NSLog(@"openTypingTerminal");
     NSBundle *mainBundle=[NSBundle mainBundle];
     NSString *path=[mainBundle pathForResource:@"atext" ofType:nil];
-
-//    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-//    NSString *adbPath = [defaults objectForKey:@"adbPath"];
 
     // TODO: pass the ADB that the app is currently configured to use.
     NSString *s = [NSString stringWithFormat: @"tell application \"Terminal\" to do script \"%@\"", path];
@@ -766,12 +741,10 @@
 }
 
 - (IBAction)copyPlain:(id)sender {
-    NSLog(@"copyPlain");
     [self copySelectedRow:NO: NO];
 }
 
 - (IBAction)copyMessageOnly:(id)sender {
-    NSLog(@"copyMessageOnly");
     [self copySelectedRow:NO: YES];
     
 }
@@ -811,14 +784,12 @@
     if ( [saveDlg runModal] == NSOKButton ) {
         
         NSURL*  saveDocPath = [saveDlg URL];
-        NSLog(@"Save filter to: %@", saveDocPath);
         [dataToExport writeToURL:saveDocPath atomically:NO];
     }
     
 }
 
 - (IBAction)biggerFont:(id)sender {
-    NSLog(@"biggerFont");
     NSMutableDictionary* scratchFonts = [NSMutableDictionary dictionary];
     
     fontPointSize += 1;
@@ -843,7 +814,6 @@
 }
 
 - (IBAction)smallerFont:(id)sender {
-    NSLog(@"smallerFont");
     NSMutableDictionary* scratchFonts = [NSMutableDictionary dictionary];
     
     fontPointSize -= 1;
@@ -868,14 +838,12 @@
 - (void) newFilterFromSelected:(id)sender {
     NSLog(@"newFilterFromSelected: %ld, %ld [%@]", [self.filterListTable rightClickedColumn], [self.filterListTable rightClickedRow], sender);
     if (self.predicate == nil) {
-        NSLog(@"newFilterFromSelected: No predicate set.");
         return;
     }
 
     [self.predicateEditor setObjectValue:self.predicate];
     [self.savePredicateName setStringValue:[self newUnusedPredicateName]];
     
-    NSLog(@"showPredicateEditor");
     [NSApp beginSheet:self.predicateSheet
 	   modalForWindow:nil
 		modalDelegate:nil
@@ -884,7 +852,6 @@
 }
 
 - (void) editFilter:(id)sender {
-    NSLog(@"editFilter: %ld, %ld [%@]", [self.filterListTable rightClickedColumn], [self.filterListTable rightClickedRow], sender);
     if ([self.filterListTable rightClickedRow] < 1) {
         return;
     }
@@ -898,7 +865,6 @@
     
     [self.predicateText setStringValue:[self.predicateEditor objectValue]];
     
-    NSLog(@"showPredicateEditor");
     [NSApp beginSheet:self.predicateSheet
 	   modalForWindow:nil
 		modalDelegate:nil
@@ -908,13 +874,11 @@
 }
 
 - (IBAction)filterBySelected:(id)sender {
-    NSLog(@"filterBySelected: %ld, %ld [%@]", [self.logDataTable rightClickedColumn], [self.logDataTable rightClickedRow], sender);
 
     NSTableColumn* aColumn = [self.logDataTable tableColumns][[self.logDataTable rightClickedColumn]];
     NSDictionary* rowDetails = [self dataForRow: [self.logDataTable rightClickedRow]];
 
     NSString* columnName = [[aColumn headerCell] title];
-    NSLog(@"ColumnName: %@", columnName);
     NSString* value = [rowDetails valueForKey:[aColumn identifier]];
     
     NSPredicate* newPredicate = [NSPredicate predicateWithFormat:@"%K ==[cd] %@", [aColumn identifier], value];
@@ -922,7 +886,6 @@
     [self.predicateEditor setObjectValue:newPredicate];
     [self.savePredicateName setStringValue:[NSString stringWithFormat:@"%@_%@", columnName, value]];
     
-    NSLog(@"showPredicateEditor");
     [NSApp beginSheet:self.predicateSheet
 	   modalForWindow:nil
 		modalDelegate:nil
@@ -964,7 +927,6 @@
 }
 
 - (void) copy:(id)sender {
-    NSLog(@"Copy Selected Rows");
     [self copySelectedRow: NO: NO];
 }
 
@@ -972,8 +934,6 @@
     
     int selectedRow = (int)[self.logDataTable selectedRow]-1;
     int	numberOfRows = (int)[self.logDataTable numberOfRows];
-    
-    NSLog(@"Selected Row: %d, Total Rows: %d", selectedRow, numberOfRows);
     
     NSIndexSet* indexSet = [self.logDataTable selectedRowIndexes];
     if (indexSet != nil && [indexSet firstIndex] != NSNotFound) {
@@ -1071,7 +1031,6 @@
 #pragma mark -
 
 - (void) onLoggerStarted {
-    NSLog(@"LogcatDatasourceDelegate::onLoggerStarted");
     [self resetConnectButton];
     
     NSString* deviceId = [self.logDatasource deviceId];
@@ -1081,7 +1040,6 @@
 }
 
 - (void) onLoggerStopped {
-    NSLog(@"LogcatDatasourceDelegate::onLoggerStopped");
     [self resetConnectButton];
 }
 
@@ -1102,12 +1060,10 @@
 }
 
 - (void) onMultipleDevicesConnected {
-    NSLog(@"LogcatDatasourceDelegate::onMultipleDevicesConnected");
     [self.deviceSource loadDeviceList];
 }
 
 - (void) onDeviceNotFound {
-    NSLog(@"LogcatDatasourceDelegate::onDeviceNotFound");
     [self.logDatasource setDeviceId:nil];
 }
 
@@ -1230,7 +1186,6 @@
 }
 
 - (IBAction)toggleAutoFollow:(id)sender {
-    NSLog(@"toggleAutoFollow");
     scrollToBottom = !scrollToBottom;
     if (scrollToBottom) {
         [self.logDataTable scrollRowToVisible:[self.logData count]-1];
@@ -1243,7 +1198,6 @@
 
 - (IBAction)showPredicateEditor:(id)sender {
 
-    NSLog(@"Filter Name: %@", @"This will be used for saved predicates");
     BOOL isFirstRun = NO;
     if (self.baseRowTemplates == nil)
     {
@@ -1269,7 +1223,6 @@
         [self.savePredicateName setStringValue:unamedFilter];
     }
     
-    NSLog(@"showPredicateEditor");
     [NSApp beginSheet:self.predicateSheet
 	   modalForWindow:nil
 		modalDelegate:nil
@@ -1282,7 +1235,6 @@
 }
 
 - (IBAction)closePredicateSheet:(id)sender {
-    NSLog(@"closePredicateSheet");
     [self applyPredicate:sender];
 
     NSString* filterName = [self.savePredicateName stringValue];
@@ -1311,7 +1263,6 @@
 }
 
 - (IBAction)cancelPredicateEditing:(id)sender {
-    NSLog(@"cancelPredicateEditing");
 
     self.predicate = nil;
     self.logData = [self.logDatasource eventsForPredicate: self.predicate];

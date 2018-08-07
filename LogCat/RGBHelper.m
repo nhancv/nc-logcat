@@ -57,7 +57,6 @@ uint32_t RGB444toRGBA(uint16_t rgb444) {
 	blue = ((temp >> 8) & 0xf) << 4;
     
 	return (red << 16) | (green << 8) | blue | 0xFF000000;
-    //	return (red << 24) | (green << 16) | (blue << 8) | 0xFF;
 }
 
 uint32_t RGB555toRGBA(uint16_t rgb555) {
@@ -67,7 +66,6 @@ uint32_t RGB555toRGBA(uint16_t rgb555) {
 	green = (temp >> 2) & 0xF8;
 	blue = (temp << 3) & 0xF8;
 	return (blue << 16) | (green << 8) | red | 0xFF000000;
-    //	return (red << 24) | (green << 16) | (blue << 8) | 0xFF;
 }
 
 uint32_t RGB565toRGBA(uint16_t rgb565) {
@@ -78,19 +76,11 @@ uint32_t RGB565toRGBA(uint16_t rgb565) {
 	green = (temp >> 5) & 0x3F;
 	blue = (temp & 0x001F);
     
-    //	red = (temp & 0xF800) >> 11;
-    //	green = (temp & 0x7E0) >> 5;
-    //	blue = (temp & 0x1F);
-    
 	red = (red << 3) | (red >> 2);
 	green = (green << 2) | (green >> 4);
 	blue = (blue << 3) | (blue >> 2);
     
-    //	NSLog(@"RGBA Real: %02x%02x%02x", red, green, blue);
-    //	NSLog(@"RGBA Fake: %x", ((red << 24) | (green << 16) | (blue << 8) | 0xFF));
-    
 	return (blue << 16) | (green << 8) | red | 0xFF000000;
-    //	return (red << 24) | (green << 16) | (blue << 8) | 0xFF;
 }
 
 uint32_t RemapColor(uint32_t value) {
@@ -157,7 +147,6 @@ uint32_t RemapColor(uint32_t value) {
 	uint32_t *src;
 	uint32_t *dest;
 	
-//	NSInteger dstRowBytes;
     
 	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc]
                                 initWithBitmapDataPlanes: nil
@@ -174,7 +163,6 @@ uint32_t RemapColor(uint32_t value) {
 	src = (uint32_t *) (data);
 	dest = (uint32_t *) [bitmap bitmapData];
     
-//	dstRowBytes = [bitmap bytesPerRow];
     
 	int i, end = width * height;
     

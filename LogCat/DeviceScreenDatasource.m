@@ -189,12 +189,10 @@
             (d & 0x000000FFU) << 16 |
             (c & 0x000000FFU) << 24 ;
     
-    //NSLog(@"Result: %d, 0x%4X", result, result);
     return result;
 }
 
 - (void) pullScreenFromDeviceWithScreenCap {
-//    NSLog(@"pullScreenFromDeviceWithScreenCap");
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     // TODO: Need better naming once we support multi-device
@@ -234,8 +232,6 @@
         NSString *string;
         string = [[NSString alloc] initWithData: readData encoding: NSUTF8StringEncoding];
         
-        
-//        NSLog(@"Screen pulled: %@", string);
         
         // Transcode data
         BOOL exists = [fileManager fileExistsAtPath:@"/tmp/logcat.png"];
@@ -285,7 +281,6 @@
         NSString *string;
         string = [[NSString alloc] initWithData: readData encoding: NSUTF8StringEncoding];
         
-//        NSLog(@"screen shot result: %@", string);
     } @catch(NSException* ex) {
         NSLog(@"Failed to get screen capture from device because %@", ex);
     }

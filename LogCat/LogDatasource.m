@@ -7,7 +7,7 @@
 
 #import "LogDatasource.h"
 #import "AdbTaskHelper.h"
-#import "NSString_Extension.h"
+#import "NSStringExtension.h"
 #import "BinaryDataScanner.h"
 
 // 1 - adb logcat -v long
@@ -93,7 +93,6 @@
 }
 
 - (NSArray*) eventsForPredicate: (NSPredicate*) predicate {
-//    NSLog(@"eventsForPredicate: %ld", [self.logData count]);
     @try {
         if (self.logData == nil) {
             return @[];
@@ -103,7 +102,6 @@
     }
         
     NSArray* filteredEvents = [self.logData copy];
-//    NSLog(@"eventsForPredicate::filteredEvents: %ld", [filteredEvents count]);
     if (predicate != nil && filteredEvents != nil && [filteredEvents count] > 0) {
         @try {
             filteredEvents = [filteredEvents filteredArrayUsingPredicate:predicate];
@@ -128,7 +126,6 @@
     }
     
     self.startTime = [NSDate date];
-    //[self clearLog];
     if (self.thread == nil) {
         self.thread = [[NSThread alloc] initWithTarget:self selector:@selector(internalStartLogger) object:nil];
         [self.thread start];
@@ -136,7 +133,6 @@
 }
 
 - (void) stopLogger {
-    NSLog(@"Stop logging called.");
     isLogging = NO;
     [self.thread cancel];
     self.thread = nil;
@@ -313,11 +309,9 @@
         file = [pipe fileHandleForReading];
         
         [task launch];
-        //NSLog(@"Task isRunning: %d", task.isRunning);
         
         NSData *data = nil;
         while (isLogging && (((data = [file availableData]) != nil) || [task isRunning])) {
-            //NSLog(@"Task: %d, data=%@", [task isRunning], data);
             while (data == nil || [data length] == 0) {
                 data = [file availableData];
                 if ((data == nil || [data length] == 0) && ![task isRunning]) {
@@ -330,7 +324,6 @@
                 
                 NSString *string;
                 string = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
-    //            NSLog(@"Data: %@", string);
                 if (param != nil) {
                     NSLog(@"Parse: %@", string);
                     [self appendThreadtimeLog:string];
@@ -338,7 +331,6 @@
                     [self performSelectorOnMainThread:@selector(appendLongLog:) withObject:string waitUntilDone:YES];
                     
                 } else if (LOG_FORMAT == 2) {
-    //                [self performSelectorOnMainThread:@selector(appendThreadtimeLog:) withObject:string waitUntilDone:YES];
                     [self appendThreadtimeLog:string];
                     
                 } else if (LOG_FORMAT == 3) {
@@ -392,168 +384,9 @@
  The binary parsing code here is a mess. It seems adb gives a corrupted binary stream
  */
 - (void) appendBinaryLog: (NSData*) data {
-//    NSAssert([NSThread isMainThread], @"Method can only be called on main thread!");
-//    
-//    if (counter > 40) {
-//        NSLog(@"End of test data..");
-//        return;
-//    }
-//    NSString* fileToLoad = [NSString stringWithFormat:@"/Users/chris/Desktop/binLogTest/binLog_%ld.bin", counter++];
-//    NSLog(@"Loading: %@", fileToLoad);
-//    data = [NSData dataWithContentsOfFile:fileToLoad];
-//    NSLog(@"Loaded: %ld bytes", [data length]);
-//    //    [data writeToFile:[NSString stringWithFormat:@"/Users/chris/Desktop/binLog_%ld.bin", counter++] atomically:NO];
-//
-//    
-////    NSLog(@"--------------------------------");
-////    NSLog(@"   Read %ld bytes", [data length]);
-////    NSLog(@"0-------------------------------");
-//
-//    /*
-//     Header (20 bytes total):
-//     [payloadlength]  2 bytes
-//     [unused padding] 2 bytes
-//     [PID]            4 bytes
-//     [Thread ID]      4 bytes
-//     [time seconds]   4 bytes
-//     [time nanosecs]  4 bytes
-//     [payload]        payloadlength bytes
-//     
-//     Payload section of the header is (payloadlength bytes total):
-//     [log priority]            1 byte
-//     [null terminated tag]     unknown length, < payloadlength
-//     [null terminated log msg] unknown length, < payloadlength
-//     */
-//    
-////    NSLog(@"PreData: (%ld)", [data length]
-////    [self logData:data];
-//    if (pendingData != nil && [pendingData length] > 0) {
-//        NSMutableData* newData = [NSMutableData dataWithData:pendingData];
-//        [newData appendData:data];
-//        data = newData;
-//        pendingData = nil;
-//    }
-//
-//
-////    data = [NSData dataWithContentsOfFile:@"/Users/chris/Desktop/testLog1msg.bin"];
-////    data = [NSData dataWithContentsOfFile:@"/Users/chris/Desktop/testBinLog2.bin"];
-//    
-//    NSLog(@"Post Data: (%ld)", [data length]);
-//    [self logData:data];
-//    BinaryDataScanner* binaryScanner = [BinaryDataScanner binaryDataScannerWithData:data littleEndian:YES defaultEncoding:NSUTF8StringEncoding];
-//
-//    NSUInteger bytesRead = 0;
-//    NSUInteger bufferOffset = 0;
-//    while ([binaryScanner remainingBytes] > LOG_HEADER_LEN) {
-//        NSUInteger size = [binaryScanner readWord];
-//        bytesRead = 2;
-//        NSLog(@"Size: %lu", size);
-//        
-//        NSLog(@"Remianing: %ld, Size: %ld", [binaryScanner remainingBytes], size+(LOG_HEADER_LEN));
-//        if (([binaryScanner remainingBytes]+bytesRead) < size+(LOG_HEADER_LEN)) {
-//            // We don't have a full log entry so save remaining buffer and get more
-//            
-//            NSUInteger offset = bufferOffset;
-//            NSUInteger len = [data length] - offset;
-//            NSRange range = NSMakeRange(offset, len);
-//            pendingData = [NSData dataWithData:[data subdataWithRange:range]];
-//            NSLog(@"1. Insufficient data. remainingBytes: %ld length: %ld (offset=%ld, len=%ld)", [binaryScanner remainingBytes], [data length], offset, len);
-//            return;
-//        }
-//        
-//        NSUInteger offset = bufferOffset;
-//        NSUInteger len = size + (LOG_HEADER_LEN);
-//        NSRange range = NSMakeRange(offset, len);
-//        NSData* dataToParse = [NSData dataWithData:[data subdataWithRange:range]];
-//        NSLog(@"Will Parse: (%ld)", size);
-//        [self logData:dataToParse];
-//
-//        [self parseBinaryLogEvent:dataToParse];
-//        
-//        bufferOffset += len;
-//        NSLog(@"Skipping: %ld", len);
-//        [binaryScanner skipBytes:len-bytesRead];
-//    
-//    }
-//
-//    if (pendingData == nil && [binaryScanner remainingBytes] > 0) {
-//        NSUInteger offset = bufferOffset;
-//        NSUInteger len = [data length] - offset;
-//        NSRange range = NSMakeRange(offset, len);
-//        pendingData = [NSData dataWithData:[data subdataWithRange:range]];
-//        NSLog(@"2. Insufficient data. remainingBytes: %ld length: %ld (offset=%ld, len=%ld)", [binaryScanner remainingBytes], [data length], offset, len);
-//        return;
-//    }
+
 }
-
-//- (void) parseBinaryLogEvent: (NSData*) data {
-//    /*
-//     The binary log cat seems to be putting random bytes into the stream so this does not work.
-//     */
-//    
-//    BinaryDataScanner* binaryScanner = [BinaryDataScanner binaryDataScannerWithData:data littleEndian:YES defaultEncoding:NSUTF8StringEncoding];
-//    NSUInteger size = [binaryScanner readWord];
-//    if (size == 0) {
-//        NSLog(@"Did not expect a size of zero");
-//    }
-//    
-//    NSUInteger padding = [binaryScanner readWord]; // unused padding
-//    if (padding != 0) {
-////        NSLog(@"Padding: %ld, %ld", padding, [binaryScanner remainingBytes]);
-//    }
-//    NSUInteger bPid = [binaryScanner readDoubleWord];
-////    NSLog(@"PID: %ld", bPid);
-//    pid = [NSString stringWithFormat:@"%ld", bPid];
-//    
-//    NSUInteger bTid = [binaryScanner readDoubleWord];
-////    NSLog(@"TID: %ld", bTid);
-//    tid = [NSString stringWithFormat:@"%ld", bTid];
-//    
-//    NSUInteger bSec = [binaryScanner readDoubleWord];
-////    NSLog(@"SEC: %ld", bSec);
-//    time = [NSString stringWithFormat:@"%ld", bSec];
-//    
-//    NSUInteger bnSec = [binaryScanner readDoubleWord];
-//    NSLog(@"NSEC: %ld", bnSec); // Log this so we don't get the compiler warning
-//    //        NSString* nanoSecs = [NSString stringWithFormat:@"%ld", bnSec];
-//    
-//    NSUInteger bPriority = [binaryScanner readByte];
-////    NSLog(@"Priority: %ld", bPriority);
-//    
-//    NSString* bTag = [binaryScanner readNullTerminatedString];
-////    NSLog(@"Tag: %@", bTag);
-//    
-//    NSString* bLogMsg = [binaryScanner readNullTerminatedString];
-////    NSLog(@"Msg: %@", bLogMsg);
-//    
-//    app = [self appNameForPid:pid];
-//    
-//    NSString* logLevel = [self logLevelForValue:bPriority];
-//    
-//    NSArray* lines = [bLogMsg componentsSeparatedByCharactersInSet: [NSCharacterSet newlineCharacterSet]];
-//    for (NSString* line in lines) {
-//        if ([line length] == 0) {
-//            continue;
-//        }
-//        
-//        if (bTag == nil) {
-//            bTag = @"";
-//        }
-//        NSLog(@"%@ %@ %@ %@ %@ %@ %@", time, app, pid, tid, logLevel, bTag, line != nil ? line : @"");
-//        NSArray* values = [NSArray arrayWithObjects: time, app, pid, tid, logLevel, bTag, line != nil ? line : @"", nil];
-//        if ([values count] < 7) {
-//            NSLog(@"Invalid Length. %ld", [values count]);
-//        }
-//        NSDictionary* row = [NSDictionary dictionaryWithObjects:values forKeys:keysArray];
-//        [self appendRow:row];
-//    }
-//    
-//    [self performSelectorOnMainThread:@selector(onLogUpdated) withObject:nil waitUntilDone:YES];
-//}
-
 - (void) appendThreadtimeLog: (NSString*) paramString {
-//    NSAssert([NSThread isMainThread], @"Method can only be called on main thread!");
-//    NSLog(@"appendThreadtimeLog on thread: %@", [NSThread currentThread]);
     NSMutableString* currentLine = [NSMutableString string];
     
     NSString* defCopy = [self.previousString copy];
@@ -609,19 +442,19 @@
             isLogging = NO;
             NSLog(@"parseThreadTimeLine: %@, %@", line, self);
             [self performSelectorOnMainThread:@selector(onMultipleDevicesConnected) withObject:nil waitUntilDone:YES];
-//            [self onMultipleDevicesConnected];
+
             return;
         } else if ([line hasPrefix:DEVICE_NOT_FOUND_MSG]) {
             NSLog(@"Device Not Found. Abort Logcat.");
             isLogging = NO;
             [self performSelectorOnMainThread:@selector(onMultipleDevicesConnected) withObject:nil waitUntilDone:YES];
-//            [self onMultipleDevicesConnected];
+
             return;
         }
         return;
     }
     self.previousString = line;
-//        NSLog(@"Parsing \"%@\"", line);
+
     NSScanner* scanner = [NSScanner scannerWithString:line];
     NSString* dateVal;
     
@@ -682,8 +515,6 @@
     NSString* msgVal;
     result = [scanner scanUpToString:@"\n" intoString:&msgVal];
     if (!result) {
-//            NSLog(@"7: No msg on line: %@", line);
-//        return;
         msgVal = @"";
     }
 
@@ -771,23 +602,21 @@
                     // This is normal during startup because there can be log
                     // messages from apps that are not running anymore.
                     self.app = @"unknown";
-//                    [pidMap setValue:app forKey:pid];
                 }
             }
             self.type = [line substringWithRange:[match rangeAtIndex:4]];
             self.name = [line substringWithRange:[match rangeAtIndex:5]];
             
-            // NSLog(@"xxx--- 1 time: %@, app: %@, pid: %@, tid: %@, type: %@, name: %@", time, app, pid, tid, type, name);
         } else if (match == nil && [line length] != 0 && !([self.previousString length] > 0 && [line isEqualToString:self.previousString])) {
             [self.text appendString:@"\n"];
             [self.text appendString:line];
             
-            // NSLog(@"xxx--- 2 text: %@", text);
+            
         } else if ([line length] == 0 && time != nil) {
-            // NSLog(@"xxx--- 3 text: %@", text);
+            
             
             if ([self.text rangeOfString:@"\n"].location != NSNotFound) {
-                // NSLog(@"JEST!");
+                
                 NSArray* linesOfText = [self.text componentsSeparatedByString:@"\n"];
                 for (NSString* lineOfText in linesOfText) {
                     if ([lineOfText length] == 0) {
@@ -799,7 +628,7 @@
                     [self appendRow:row];
                 }
             } else {
-                // NSLog(@"xxx--- 4 text: %@", text);
+                
                 
                 NSArray* values = @[[self getIndex] ,self.time, self.app, self.pid, self.tid, self.type, self.name, self.text];
                 NSDictionary* row = [NSDictionary dictionaryWithObjects:values forKeys:self.keysArray];
@@ -825,7 +654,7 @@
     if (elapsedTime < 30 && self.logData != nil && [self.logData count] > 0) {
         NSDictionary* lastItem = [self.logData lastObject];
         if ([row[KEY_TIME] compare:lastItem[KEY_TIME]] == NSOrderedAscending) {
-//            NSLog(@"Event is older: row=%@, last=%@", [row objectForKey:KEY_TIME], [lastItem objectForKey:KEY_TIME]);
+
         } else {
             [self.logData addObject:row];
         }
@@ -866,7 +695,7 @@
             // messages from apps that are not running anymore.
             appVal = @"unknown";
             NSTimeInterval elapsedTime = -[self.startTime timeIntervalSinceNow];
-            // NSLog(@"Elapsed: %f", elapsedTime);
+            
             if (elapsedTime < 30) {
                 // There are potentially a lot of these when we first start reading the cached log
                 [self.pidMap setValue:appVal forKey:pidVal];
